@@ -25,6 +25,46 @@ fastify.get('/customers', {
     }
 })
 
+fastify.get('/orders', {
+    preHandler: async (request, reply) => {
+        console.log("getting orders data")
+    },
+    handler: async (request, reply) => {
+        const [rows] = await db.query("select * from orders")
+        reply.status(200).send({ data: rows })
+    }
+})
+
+fastify.get('/order-items', {
+    preHandler: async (request, reply) => {
+        console.log("getting order items data")
+    },
+    handler: async (request, reply) => {
+        const [rows] = await db.query("select * from order_items")
+        reply.status(200).send({ data: rows })
+    }
+})
+
+fastify.get('/sales-report', {
+    preHandler: async (request, reply) => {
+        console.log("getting sales report data")
+    },
+    handler: async (request, reply) => {
+        const [rows] = await db.query("select * from sales_report")
+        reply.status(200).send({ data: rows })
+    }
+})
+
+fastify.get('/customer-order-history', {
+    preHandler: async (request, reply) => {
+        console.log("getting all customers' order history data")
+    },
+    handler: async (request, reply) => {
+        const [rows] = await db.query("select c.customer_id, c.customer_name, c.email, o.order_id, o.order_date, o.total_amount from customers c left join orders o on c.customer_id = o.customer_id;")
+        reply.status(200).send({ data: rows })
+    }
+})
+
 fastify.route({
   method: "POST",
   url: "/user",
