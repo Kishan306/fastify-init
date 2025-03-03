@@ -1,7 +1,17 @@
 import db from "../config/db.js";
+import Joi from "joi";
+import JoiCompiler from 'joi-compiler'
+const joiCompilerInstance = JoiCompiler()
+
+const userSchema = joiCompilerInstance.joi.object({
+    name: joiCompilerInstance.joi.string().pattern(new RegExp('^[a-zA-Z]{3,10}$')).message("Only 3-30 uppercase and lowercase letters accepted!!")
+  });
 
 async function routes(fastify, options) {
   fastify.get("/", {
+    schema: {
+        querystring: userSchema
+    },
     handler: async (request, reply) => {
       reply.status(200).send({ message: `Hello ${request.query.name}` });
     },
@@ -99,12 +109,12 @@ async function routes(fastify, options) {
     handler: async (request, reply) => {
       const { username, password } = request.body;
 
-      if (username == "kishan" && password == "kishan") {
+      if (username == "admin" && password == "admin") {
         return {
           message: "login successful",
           username,
         };
-      } else if (username != "kishan") {
+      } else if (username != "admin") {
         reply.status(404).send({ message: "user not found" });
       } else {
         reply.status(401).send({ message: "invalid credentials" });
